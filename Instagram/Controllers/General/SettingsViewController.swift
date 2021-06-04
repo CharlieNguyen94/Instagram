@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SafariServices
 
 struct SettingCellModel {
     let title: String
@@ -24,12 +25,12 @@ final class SettingsViewController: UIViewController {
     }()
     
     private var data = [[SettingCellModel]]()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureModels()
-
+        
         view.addSubview(tableView)
         view.backgroundColor = .systemBackground
         tableView.delegate = self
@@ -42,12 +43,77 @@ final class SettingsViewController: UIViewController {
     }
     
     private func configureModels() {
-        let section = [
+        data.append([
+            SettingCellModel(title: "Edit Profile") { [weak self] in
+                self?.didTapEditProfile()
+            },
+            SettingCellModel(title: "Invite Friends") { [weak self] in
+                self?.didTapInviteFriends()
+            },
+            SettingCellModel(title: "Save Original Posts") { [weak self] in
+                self?.didTapSaveOriginalPosts()
+            }
+        ])
+        
+        data.append([
+            SettingCellModel(title: "Terms of Service") { [weak self] in
+                self?.openURL(type: .terms)
+            },
+            SettingCellModel(title: "Privacy Policy") { [weak self] in
+                self?.openURL(type: .privacy)
+            },
+            SettingCellModel(title: "Help / Feedback") { [weak self] in
+                self?.openURL(type: .help)
+            }
+        ])
+        
+        data.append([
             SettingCellModel(title: "Log out") { [weak self] in
                 self?.didTapLogOut()
             }
-        ]
-        data.append(section)
+        ])
+        
+    }
+    
+    enum SettingsURLType {
+        case terms, privacy, help
+    }
+    
+    private func openURL(type: SettingsURLType) {
+        let urlString: String
+        
+        
+        switch type {
+        case .terms: urlString = "https://help.instagram.com/581066165581870"
+        case .privacy: urlString = "https://help.instagram.com/519522125107875/?helpref=hc_fnav&bc[0]=Instagram%20Help&bc[1]=Policies%20and%20Reporting"
+        case .help: urlString = "https://help.instagram.com"
+            
+        }
+        
+        guard let url = URL(string: urlString) else { return }
+        
+        let vc = SFSafariViewController(url: url)
+        present(vc, animated: true)
+        
+    }
+    
+    private func didTapEditProfile() {
+        
+        let vc = EditProfileViewController()
+        vc.title = "Edit Profile"
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.modalPresentationStyle = .fullScreen
+        present(navVC, animated: true)
+    }
+    
+    private func didTapInviteFriends() {
+        // Show a share sheet
+        
+        
+    }
+    
+    private func didTapSaveOriginalPosts() {
+        
     }
     
     private func didTapLogOut() {
@@ -79,7 +145,7 @@ final class SettingsViewController: UIViewController {
         present(actionSheet, animated: true)
         
     }
-
+    
 }
 
 extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
