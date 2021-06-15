@@ -113,6 +113,7 @@ class EditProfileViewController: UIViewController, UITableViewDataSource {
         let model = models[indexPath.section][indexPath.row]
         
         cell.configure(with: model)
+        cell.delegate = self
         return cell
     }
     
@@ -128,6 +129,7 @@ class EditProfileViewController: UIViewController, UITableViewDataSource {
     
     @objc func didTapSave() {
         // Save info to database
+        dismiss(animated: true, completion: nil)
     }
     
     @objc func didTapCancel() {
@@ -155,4 +157,11 @@ class EditProfileViewController: UIViewController, UITableViewDataSource {
     }
     
     
+}
+
+extension EditProfileViewController: FormTableViewCellDelegate {
+    func formTableViewCell(_ cell: FormTableViewCell, didUpdateField updatedModel: EditProfileFormModel) {
+        // Update the model
+        print(updatedModel.value ?? "nil")
+    }
 }
